@@ -38,7 +38,7 @@ export default function AppointmentScreen({ route }) {
             </View>
             <View>
               <Text style={{ alignSelf: "flex-start" }} bold>
-                {appointment.specialist} -
+                Médico: {appointment.specialist} -
               </Text>
               <Text style={{ alignSelf: "flex-start" }} bold>
                 Especialista em {appointment.speciality.nm_especialidade}
