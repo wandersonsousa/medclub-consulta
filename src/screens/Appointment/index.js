@@ -22,6 +22,14 @@ export default function AppointmentScreen({ route }) {
               <Text bold>Paciente</Text>
               <Text style={{ alignSelf: "flex-start" }}>João da Silva</Text>
             </View>
+
+            <View>
+              <Text bold>Agendada para</Text>
+              <Text style={{ alignSelf: "flex-start" }}>
+                {appointment.day}({appointment.dayName}) - {appointment.hour} de {appointment.month}
+              </Text>
+            </View>
+
             <View>
               <Text bold>Endereço</Text>
               <Text style={{ alignSelf: "flex-start" }}>{appointment.nm_local}</Text>
@@ -41,7 +49,7 @@ export default function AppointmentScreen({ route }) {
                 Valor: {appointment.price}
               </Text>
 
-              <Text style={{ alignSelf: "flex-start" }} bold>
+              <Text style={{ alignSelf: "flex-start" }} mt={4}>
                 Criada em: {createdAt}
               </Text>
             </View>
