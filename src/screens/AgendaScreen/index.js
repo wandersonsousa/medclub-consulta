@@ -23,39 +23,44 @@ export default function AgendaScreen({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: 16 }}>
-      <Stack space={4} w="100%">
+    <SafeAreaView
+      style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: 16, paddingHorizontal: 16 }}
+    >
+      <Stack space={2} w="100%">
         {appointments.map((ap) => {
           const createdAt = Datetime.unix(ap.createdAt)
             .toDate()
             .toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
 
           return (
-            <Stack direction="row" bg={"indigo.50"} key={ap.id} p={4} space={4}>
-              <Box bg={"indigo.100"} borderRadius={8} p={3} alignItems="center" justifyContent="center">
-                <Icon as={AntDesign} name="medicinebox" size={50} />
-              </Box>
-              <View style={{ flexGrow: 1, gap: 8 }}>
-                <View>
-                  <Text style={{ alignSelf: "flex-start" }}>{ap.nm_local}</Text>
+            <Box key={ap.id} bg={"indigo.50"} p={2}>
+              <Stack direction="row" p={4} space={4}>
+                <Box bg={"indigo.100"} borderRadius={8} p={3} alignItems="center" justifyContent="center">
+                  <Icon as={AntDesign} name="medicinebox" size={50} />
+                </Box>
+                <View style={{ flexGrow: 1, gap: 8 }}>
+                  <View>
+                    <Text style={{ alignSelf: "flex-start" }}>{ap.nm_local}</Text>
 
-                  <Text style={{ alignSelf: "flex-start" }}>{ap.nm_bairro}</Text>
-                </View>
-                <View>
-                  <Text style={{ alignSelf: "flex-start" }} bold>
-                    Especialista: {ap.specialist}
-                  </Text>
-                  <Text style={{ alignSelf: "flex-start" }} bold>
-                    Valor: {ap.price}
-                  </Text>
+                    <Text style={{ alignSelf: "flex-start" }}>{ap.nm_bairro}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ alignSelf: "flex-start" }} bold>
+                      Especialista: {ap.specialist}
+                    </Text>
+                    <Text style={{ alignSelf: "flex-start" }} bold>
+                      Valor: {ap.price}
+                    </Text>
 
-                  <Text style={{ alignSelf: "flex-start" }} bold>
-                    Em: {createdAt}
-                  </Text>
+                    <Text style={{ alignSelf: "flex-start" }} bold>
+                      Em: {createdAt}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View style={{ alignItems: "center", justifyContent: "center", gap: 4 }}>
+              </Stack>
+              <Stack alignItems="center" justifyContent="center" space={4} direction="row">
                 <Button
+                  alignSelf="flex-start"
                   colorScheme="primary"
                   onPress={async () => {
                     navigation.navigate("Appointment", {
@@ -66,6 +71,7 @@ export default function AgendaScreen({ navigation }) {
                   Visualizar
                 </Button>
                 <Button
+                  alignSelf="flex-start"
                   colorScheme={"error"}
                   onPress={async () => {
                     await AppointmentServiceImpl.delete(ap.id);
@@ -74,8 +80,8 @@ export default function AgendaScreen({ navigation }) {
                 >
                   Deletar
                 </Button>
-              </View>
-            </Stack>
+              </Stack>
+            </Box>
           );
         })}
       </Stack>
