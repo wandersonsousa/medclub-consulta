@@ -1,36 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { Icon, Text, Box, Stack, Button } from "native-base";
 import { SafeAreaView, View, ScrollView } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+
 import { AppointmentRepository } from "../../core/repositories/appointment-repository";
 import { AppointmentService } from "../../core/services/appointment-service";
-import { AntDesign } from "@expo/vector-icons";
-import { Datetime } from "../../core/lib/Datetime";
+import { AppService } from "../../core/services/app-service";
 
 const AppointmentRepositoryImpl = new AppointmentRepository();
 const AppointmentServiceImpl = new AppointmentService(AppointmentRepositoryImpl);
+const AppServiceImpl = new AppService();
+
+const LOCALS = AppServiceImpl.getConstants().LOCALS;
+const DISPONIBLE_DATE = AppServiceImpl.getConstants().DISPONIBLE_DATE;
 
 function fetchAppointments() {
   return AppointmentServiceImpl.list();
 }
 export default function AgendaScreen({ navigation }) {
   const [appointments, setAppointments] = useState([]);
+
+  const isFocused = useIsFocused();
+
   const refetchAppointments = () => {
-    fetchAppointments().then((res) => setAppointments(res));
+    fetchAppointments().then((res) => {
+      const appointments = res.map((ap) => {
+        const date = DISPONIBLE_DATE.find((dDate) => dDate.id == ap.date_id);
+        const local = LOCALS.find((l) => l.id == ap.local_id);
+        return { ...date, ...local, ...ap };
+      });
+
+      setAppointments(appointments);
+    });
   };
 
   useEffect(() => {
     refetchAppointments();
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: 16 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Stack space={2} w="100%">
           {appointments.map((ap) => {
-            const createdAt = Datetime.unix(ap.createdAt)
-              .toDate()
-              .toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-
             return (
               <Box key={ap.id} bg={"indigo.50"} p={2}>
                 <Stack direction="row" p={4} space={4}>
@@ -52,7 +65,7 @@ export default function AgendaScreen({ navigation }) {
                       </Text>
 
                       <Text style={{ alignSelf: "flex-start" }} bold>
-                        Em: {createdAt}
+                        Para: {ap.day}({ap.dayName}) - {ap.hour} de {ap.month}
                       </Text>
                     </View>
                   </View>
@@ -71,7 +84,18 @@ export default function AgendaScreen({ navigation }) {
                   </Button>
                   <Button
                     alignSelf="flex-start"
-                    colorScheme={"error"}
+                    colorScheme="secondary"
+                    onPress={async () => {
+                      navigation.navigate("AppointmentEdit", {
+                        appointment: ap,
+                      });
+                    }}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    alignSelf="flex-start"
+                    colorScheme="error"
                     onPress={async () => {
                       await AppointmentServiceImpl.delete(ap.id);
                       refetchAppointments();

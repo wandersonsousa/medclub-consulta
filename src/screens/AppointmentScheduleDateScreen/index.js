@@ -12,6 +12,9 @@ const AppServiceImpl = new AppService();
 const LOCALS = AppServiceImpl.getConstants().LOCALS;
 const DISPONIBLE_DATE = AppServiceImpl.getConstants().DISPONIBLE_DATE;
 
+const AppointmentRepositoryImpl = new AppointmentRepository();
+const AppointmentServiceImpl = new AppointmentService(AppointmentRepositoryImpl);
+
 export default function AppointmentScheduleDateScreen({ navigation, route }) {
   const { speciality } = route.params;
 
@@ -20,6 +23,16 @@ export default function AppointmentScheduleDateScreen({ navigation, route }) {
     local: null,
     step: 0,
   });
+
+  const onSubmit = async () => {
+    await AppointmentServiceImpl.save({
+      local_id: appointment.local.id,
+      date_id: appointment.date.id,
+      speciality: speciality,
+    });
+
+    navigation.navigate("Agenda");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: 16 }}>
@@ -188,30 +201,7 @@ export default function AppointmentScheduleDateScreen({ navigation, route }) {
                 <Text fontSize="xl">{appointment.local.nm_local}</Text>
                 <Text fontSize="xl">{appointment.local.nm_bairro}</Text>
 
-                <Button
-                  mt={4}
-                  onPress={async () => {
-                    const AppointmentRepositoryImpl = new AppointmentRepository();
-                    const AppointmentServiceImpl = new AppointmentService(AppointmentRepositoryImpl);
-
-                    await AppointmentServiceImpl.save({
-                      local_id: appointment.local.id,
-                      nm_bairro: appointment.local.nm_bairro,
-                      nm_local: appointment.local.nm_local,
-                      phone: appointment.local.nm_local,
-                      price: appointment.local.price,
-                      speciality: speciality,
-                      stars: appointment.local.stars,
-                      day: appointment.date.day,
-                      dayName: appointment.date.dayName,
-                      hour: appointment.date.hour,
-                      month: appointment.date.month,
-                      specialist: appointment.local.specialist,
-                    });
-
-                    navigation.navigate("Agenda");
-                  }}
-                >
+                <Button mt={4} onPress={onSubmit}>
                   Confirmar
                 </Button>
               </View>

@@ -10,6 +10,10 @@ export default function AppointmentScreen({ route }) {
     .toDate()
     .toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
 
+  const updatedAt =
+    appointment.updatedAt &&
+    Datetime.unix(appointment.updatedAt).toDate().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+
   return (
     <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "flex-start", paddingTop: 16 }}>
       <Stack space={4} w="100%">
@@ -52,6 +56,8 @@ export default function AppointmentScreen({ route }) {
               <Text style={{ alignSelf: "flex-start" }} mt={4}>
                 Criada em: {createdAt}
               </Text>
+
+              {updatedAt && <Text style={{ alignSelf: "flex-start" }}>Atualizada em: {updatedAt}</Text>}
             </View>
           </View>
         </Stack>

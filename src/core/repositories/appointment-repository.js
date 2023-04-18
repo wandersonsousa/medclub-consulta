@@ -8,15 +8,7 @@ export class AppointmentRepository {
   async save(
     appointment = {
       local_id: "",
-      nm_bairro: "",
-      nm_local: "",
-      phone: "",
-      price: "",
-      specialist: "",
-      stars: "",
-      day: "",
-      dayName: "",
-      month: "",
+      date_id: "",
       speciality: {
         aq_foto: "",
         id: "",
@@ -26,13 +18,36 @@ export class AppointmentRepository {
       },
     }
   ) {
-    appointment.id = uuid.v4();
-    const createdAt = Datetime().unix();
-    appointment.createdAt = createdAt;
-
     const appointments = await this.list();
-    appointments.push(appointment);
+
+    // If there is no id, create a new appointment
+    if (!appointment.id) {
+      appointment.id = uuid.v4();
+      const createdAt = Datetime().unix();
+      appointment.createdAt = createdAt;
+
+      appointments.push(appointment);
+      await AsyncStorage.setItem(_STORE_KEY, JSON.stringify(appointments));
+
+      return appointment;
+    }
+
+    const apIndex = appointments.findIndex((ap) => ap.id === appointment.id);
+    if (apIndex < 0) {
+      throw new Error("appointment not found to update");
+    }
+
+    // Here should exist a validation to update just allowed fields, going to do this way for simplicity
+    const updatedAt = Datetime().unix();
+    const updatedAppointment = {
+      ...appointments[apIndex],
+      ...appointment,
+      updatedAt,
+    };
+
+    appointments[apIndex] = updatedAppointment;
     await AsyncStorage.setItem(_STORE_KEY, JSON.stringify(appointments));
+    return updatedAppointment;
   }
 
   async list() {

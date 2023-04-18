@@ -9,6 +9,7 @@ import AgendaScreen from "../screens/AgendaScreen";
 import AppointmentScheduleScreen from "../screens/AppointmentScheduleScreen";
 import AppointmentScheduleDateScreen from "../screens/AppointmentScheduleDateScreen";
 import AppointmentScreen from "../screens/Appointment";
+import AppointmentEditScreen from "../screens/AppointmentEdit";
 
 const colors = {
   brand: {
@@ -46,6 +47,11 @@ export default function MainStack() {
             options={{ title: "Agendar Consulta" }}
           />
           <Stack.Screen name="Appointment" component={AppointmentScreen} options={{ title: "Consulta" }} />
+          <Stack.Screen
+            name="AppointmentEdit"
+            component={AppointmentEditScreen}
+            options={{ title: "Editar Consulta" }}
+          />
         </Stack.Navigator>
       </NativeBaseProvider>
       <StatusBar style="auto" />
